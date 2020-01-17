@@ -76,11 +76,11 @@ static int verbose_status_bits = 0;
 
 static int leap_test(int index)
 {
-	struct timex tx;
-	struct timespec ts;
 	struct leap_second *ls = lstab_leap_second(index);
-	int tc;
+	struct timespec mono, ts;
 	FILE *fp = stdout;
+	struct timex tx;
+	int tc;
 
 	if (clear_status) {
 		memset(&tx, 0, sizeof(tx));
@@ -152,11 +152,13 @@ static int leap_test(int index)
 			perror("adjtimex");
 			return -1;
 		}
+		clock_gettime(CLOCK_MONOTONIC, &mono);
 		if (set_date && tx.time.tv_sec >= ls->epoch.utc + 5) {
 			break;
 		}
 		if (print_all || abs(tx.time.tv_sec - ls->epoch.utc) < 2) {
-			fprintf(fp, "%d %c%c %d %ld.%09ld\n",
+			fprintf(fp, "[%ld.%03ld] %d %c%c %d %ld.%09ld\n",
+				mono.tv_sec, mono.tv_nsec / 1000000,
 				tc,
 				tx.status & STA_INS ? 'I' : '-',
 				tx.status & STA_DEL ? 'D' : '-',
