@@ -22,10 +22,10 @@ CC = gcc
 CFLAGS = -Wall
 LDFLAGS = -lrt
 
-PRG = leap
+PRG = leap mktime
 OBJ = leap.o lstab.o
 
-OBJECTS	= $(OBJ)
+OBJECTS	= $(OBJ) mktime.o
 SRC	= $(OBJECTS:.o=.c)
 DEPEND	= $(OBJECTS:.o=.d)
 
